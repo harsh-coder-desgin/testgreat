@@ -5,6 +5,10 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 // import { verifiyJWT } from "../middlewares/auth.middleware.js";
 const router = Router()
 
+router.get("/ping", (req, res) => {
+  res.json({ message: "Ping successful!" });
+});
+
 
 router.route("/register").post(
     upload.fields([

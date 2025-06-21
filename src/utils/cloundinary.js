@@ -10,26 +10,34 @@ cloudinary.config({
 });
 
 
-const uploadOnCloundinary= async (localFilePath) =>{
-    try {
-        if(!localFilePath) return null
-        const response = await cloudinary.uploader.upload(localFilePath,{
-            resource_type:"auto"
-        })
-        console.log(localFilePath);
-        
-        // console.log(response,"cloundiary file response",response.url);
-        
-        // console.log("file is uploaded on cloundiary",response.url);
-        fs.unlinkSync(localFilePath)
-        console.log(response);
-        
-        return response;
-    } catch (error) {
-        fs.unlinkSync(localFilePath)
-        return null;
-    }
-}
+
+const uploadOnCloundinary = async (file) => {
+  try {
+    if (!file || !file.buffer) return null;
+
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "auto",
+          folder: "uploads", // optional
+          public_id: file.originalname?.split(".")[0], // optional
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      stream.end(file.buffer); // 👈 Send the in-memory file buffer
+    });
+
+    return result;
+  } catch (error) {
+    console.error("Cloudinary Upload Error:", error);
+    return null;
+  }
+};
+
 
 
 

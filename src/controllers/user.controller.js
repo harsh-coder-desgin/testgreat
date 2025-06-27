@@ -31,7 +31,7 @@ const registerUser =asyncHandler( async (req,res)=>{
 
     const { fullName,email,username,password } = req.body
     // console.log("email",email);
-    console.log(req.body,"req body");
+    // console.log(req.body,"req body");
     
 
     if(
@@ -50,8 +50,10 @@ const registerUser =asyncHandler( async (req,res)=>{
         throw new ApiError(409,"User with email or username already exists")
     }
 
-    const avatarLocalPath =  req.files?.avatar?.[0];
-    console.log(avatarLocalPath);
+    const avatarLocalPath = req.files?.avatar[0]?.path;
+    // console.log(avatarLocalPath,"ghfhbyukbyfhk");
+    // const avatarfile = avatarLocalPath.originalname
+    // console.log(avatarLocalPath,"avatarfile");
     
     // const coverImgaeLocalPath = req.files?.coverImage[0]?.path;
     // let coverImgaeLocalPath;
@@ -60,16 +62,26 @@ const registerUser =asyncHandler( async (req,res)=>{
     //         coverImgaeLocalPath = req.files.coverImage[0].path
     //     }
 
-    console.log(req.files,"req files");
+    // console.log(req.files,"req files");
     
     if(!avatarLocalPath){
         throw new ApiError(400,"Avatar file is required")
     }
-    const coverImgaeLocalPath =  req.files?.avatar?.[0];
+    const coverImgaeLocalPath = req.files?.coverImage[0]?.path;
+    console.log(coverImgaeLocalPath,"mnhjgghjghj");
+    
+    // console.log(coverImgaeLocalPath,"ghfhbyukbyfhk",coverImgaeLocalPath.mimetype);
+    // const coverImgaeLocalPathfile = coverImgaeLocalPath.mimetype
 
-    const avatar = await uploadOnCloundinary(avatarLocalPath)
-    const coverImage = await uploadOnCloundinary(coverImgaeLocalPath)
-
+     if(!coverImgaeLocalPath){
+        throw new ApiError(400,"image file is required")
+    }
+    console.log("first");
+    
+    const avatar = await uploadOnCloudinary(avatarLocalPath)
+    const coverImage = await uploadOnCloudinary(coverImgaeLocalPath)
+     console.log("third");
+     
     if(!avatar){
         throw new ApiError(400,"Avatar file is required")
     }
@@ -100,6 +112,80 @@ const registerUser =asyncHandler( async (req,res)=>{
         new ApiResponse(200,createdUser,"User registered successfully")
     )
 } )
+// const registerUser =asyncHandler( async (req,res)=>{
+  
+
+//     const { fullName,email,username,password } = req.body
+//     // console.log("email",email);
+//     console.log(req.body,"req body");
+    
+
+//     if(
+//         [fullName,email,username,password].some((field)=>field?.trim() === "")
+//     ){
+//         throw new ApiError(400,"All fields are required")
+//     }
+
+//     const existedUser = await User.findOne({
+//         $or:[{username},{email}]
+//     })
+//     // console.log("existedUser",existedUser);
+    
+
+//     if(existedUser){
+//         throw new ApiError(409,"User with email or username already exists")
+//     }
+
+//     const avatarLocalPath =  req.files?.avatar?.[0];
+//     console.log(avatarLocalPath);
+    
+//     // const coverImgaeLocalPath = req.files?.coverImage[0]?.path;
+//     // let coverImgaeLocalPath;
+//     // if(req.files && Array.isArray(req.files.
+//     //     coverImage) && req.files.coverImage.length > 0){
+//     //         coverImgaeLocalPath = req.files.coverImage[0].path
+//     //     }
+
+//     console.log(req.files,"req files");
+    
+//     if(!avatarLocalPath){
+//         throw new ApiError(400,"Avatar file is required")
+//     }
+//     const coverImgaeLocalPath =  req.files?.avatar?.[0];
+
+//     const avatar = await uploadOnCloundinary(avatarLocalPath)
+//     const coverImage = await uploadOnCloundinary(coverImgaeLocalPath)
+
+//     if(!avatar){
+//         throw new ApiError(400,"Avatar file is required")
+//     }
+
+//     const user = await User.create({
+//         fullName,
+//         avatar:avatar.url,
+//         coverImage:coverImage?.url || "",
+//         email,
+//         password,
+//         username:username.toLowerCase(),
+//         avatarPublicId:avatar.public_id,
+//         coverimagePublicId:coverImage.public_id
+//     })
+
+//     const createdUser = await User.findById(user._id).select(
+//         "-password -refreshToken"
+//     )
+
+//     if(!createdUser){
+//         // console.log(createdUser,"createduser");
+//         throw new ApiError(500,"something went wrong while registering the user")
+        
+//     }
+//     // console.log(createdUser,"createduser");
+
+//     res.status(201).json(
+//         new ApiResponse(200,createdUser,"User registered successfully")
+//     )
+// } )
 
 const loginUser = asyncHandler(async (req, res)=>{
 
